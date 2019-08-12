@@ -3,6 +3,7 @@ import logger from 'morgan';
 
 import db from './db'
 
+import IndexRoute from './routes/index.route';
 import AuthRoute from './routes/auth.route';
 
 const app: express.Application = express();
@@ -16,6 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static('./static'));
 
+app.use('/', IndexRoute);
 app.use('/auth', AuthRoute);
 
 app.set('views', './View');
