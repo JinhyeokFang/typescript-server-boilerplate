@@ -1,14 +1,13 @@
 import mongoose from 'mongoose';
 
-class db {
-    constructor() {
-        
-    }
+import config from './config';
+
+class DB {
     public initialize(): void {
-        mongoose.connect(`mongodb://localhost/db`, {
+        mongoose.connect(`mongodb://localhost/${config.db.name}`, {
             useNewUrlParser: true
         })
     }
 }
 
-export default new db();
+export default new DB();

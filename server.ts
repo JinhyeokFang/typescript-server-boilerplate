@@ -1,13 +1,14 @@
 import express from 'express';
 import logger from 'morgan';
 
+import config from './config';
+
 import db from './db'
 
 import IndexRoute from './routes/index.route';
 import AuthRoute from './routes/auth.route';
 
 const app: express.Application = express();
-const port: number = Number(process.env.PORT) || 8080;
 
 db.initialize();
 
@@ -23,6 +24,6 @@ app.use('/auth', AuthRoute);
 app.set('views', './View');
 app.set('view engine', 'ejs');
 
-app.listen(port, () => {
-    console.log(`Listening at http://localhost:${port}/`);
+app.listen(config.port, (): void => {
+    console.log(`Listening at http://localhost:${config.port}/`);
 });
