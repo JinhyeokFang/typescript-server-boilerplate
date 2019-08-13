@@ -2,24 +2,21 @@ import { Schema, model, Model, Document } from 'mongoose';
 
 import { encrypt } from '../utils/crypto';
 
-interface userModelType extends Document {
-    username: string,
-    password: string
-}
+interface UserModelType extends Document {
+    username: string;
+    password: string;
+};
 
 const userSchema = new Schema({
     username: String,
     password: String
 });
 
-class user {
-    private userModel:Model<userModelType>;
-    constructor() {
-        this.userModel = model("user", userSchema);
-    }
-    public login(username: string, password: string, callback: Function) {
-        encrypt(new Array<string>(username, password), (result: Array<string>) => {
-            this.userModel.findOne({username: result[0], password: result[1]}, (err: object, res: userModelType) => {
+class User {
+    private userModel: Model<UserModelType> = model("user", userSchema);
+    public login(username: string, password: string, callback: Function): void {
+        encrypt(new Array<string>(username, password), (result: string[]): void => {
+            this.userModel.findOne({username: result[0], password: result[1]}, (err: object, res: UserModelType): void => {
                 if (err) {
                     callback({ message: "failed", err });
                 } else if (res == null) {
@@ -31,14 +28,14 @@ class user {
         });
     }
 
-    public register(username: string, password: string, callback: Function) {
-        encrypt(new Array<string>(username, password), (result: Array<string>) => {
-            this.userModel.findOne({username: result[0]}, (err: object, res: userModelType) => {
+    public register(username: string, password: string, callback: Function): void {
+        encrypt(new Array<string>(username, password), (result: string[]): void => {
+            this.userModel.findOne({username: result[0]}, (err: object, res: UserModelType): void => {
                 if (err) {
                     callback({ message: "failed", err });
                 } else if (res == null) {
                     callback({ message: "success" });
-                    new this.userModel({username: result[0], password: result[1]}).save((err: object) => {
+                    new this.userModel({username: result[0], password: result[1]}).save((err: object): void => {
                         if (err)
                             callback({ message: "failed", err });
                         else
@@ -52,4 +49,4 @@ class user {
     }
 }
 
-export default new user();
+export default new User();

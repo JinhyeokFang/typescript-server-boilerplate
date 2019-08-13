@@ -1,13 +1,9 @@
 import { Request, Response } from 'express';
 
-class indexController {
-    constructor() {
-        
-    }
-
+class IndexController {
     public index(req: Request, res: Response): void {
         res.render('index');
     }
 }
 
-export default new indexController();
+export default new IndexController();

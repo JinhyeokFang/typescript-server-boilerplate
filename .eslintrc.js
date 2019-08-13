@@ -14,5 +14,6 @@ module.exports = {
       "@typescript-eslint/eslint-plugin"
     ],
     "rules": {
+      "no-explicit-any": 0,
     }
   };

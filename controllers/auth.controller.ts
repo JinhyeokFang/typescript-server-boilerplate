@@ -4,19 +4,15 @@ import { encodeToken } from '../utils/jwt';
 
 import user from '../models/user.model'
 
-class apiController {
-    constructor() {
-        
-    }
-
+class ApiController {
     public index(req: Request, res: Response): void {
         
     }
     
-    public login(req: Request, res: Response) {
+    public login(req: Request, res: Response): void {
         let { username, password } = req.body;
         
-        user.login(username, password, (result: any) => {
+        user.login(username, password, (result: any): void => {
             if (result.err == "the user not found") {
                 ResponseNotFound(res, {});
             } else if (result.err) {
@@ -30,10 +26,10 @@ class apiController {
         });
     }
     
-    public register(req: Request, res: Response) {
+    public register(req: Request, res: Response): void {
         let { username, password } = req.body;  
         
-        user.register(username, password, (result: any) => {
+        user.register(username, password, (result: any): void => {
             if (result.err == "the user already exist.") {
                 ResponseForbidden(res, {});
             } else if (result.err) {
@@ -48,4 +44,4 @@ class apiController {
     }
 }
 
-export default new apiController();
+export default new ApiController();
