@@ -5,8 +5,8 @@ import config from './config';
 
 import db from './db'
 
-import IndexRoute from './routes/index.route';
-import AuthRoute from './routes/auth.route';
+import IndexRoute from './inputs/index.route';
+import AuthRoute from './inputs/auth.route';
 
 const app: express.Application = express();
 
