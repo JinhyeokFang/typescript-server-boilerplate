@@ -15,36 +15,31 @@ const userSchema = new Schema({
 class User {
     private userModel: Model<UserModelType> = model("user", userSchema);
     public login(username: string, password: string, callback: Function): void {
-        encrypt(new Array<string>(username, password), (result: string[]): void => {
-            this.userModel.findOne({username: result[0], password: result[1]}, (err: object, res: UserModelType): void => {
-                if (err) {
-                    callback({ message: "failed", err });
-                } else if (res == null) {
-                    callback({ message: "failed", err: "the user not found" });
-                } else {
-                    callback({ message: "complete" });
-                }
-            });
+        this.userModel.findOne({username: encrypt(username), password: encrypt(password)}, (err: object, res: UserModelType): void => {
+            if (err) {
+                callback({ message: "failed", err });
+            } else if (res == null) {
+                callback({ message: "failed", err: "the user not found" });
+            } else {
+                callback({ message: "complete" });
+            }
         });
     }
 
     public register(username: string, password: string, callback: Function): void {
-        encrypt(new Array<string>(username, password), (result: string[]): void => {
-            this.userModel.findOne({username: result[0]}, (err: object, res: UserModelType): void => {
-                if (err) {
-                    callback({ message: "failed", err });
-                } else if (res == null) {
-                    callback({ message: "success" });
-                    new this.userModel({username: result[0], password: result[1]}).save((err: object): void => {
-                        if (err)
-                            callback({ message: "failed", err });
-                        else
-                            callback({ message: "complete" });
-                    })
-                } else {
-                    callback({ message: "failed", err: "the user already exist."});
-                }
-            });
+        this.userModel.findOne({username: encrypt(username)}, (err: object, res: UserModelType): void => {
+            if (err) {
+                callback({ message: "failed", err });
+            } else if (res == null) {
+                new this.userModel({username: encrypt(username), password: encrypt(password)}).save((err: object): void => {
+                    if (err)
+                        callback({ message: "failed", err });
+                    else
+                        callback({ message: "complete" });
+                })
+            } else {
+                callback({ message: "failed", err: "the user already exist."});
+            }
         });
     }
 }

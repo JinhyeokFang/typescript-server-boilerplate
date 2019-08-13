@@ -26,9 +26,8 @@
   },
   "scripts": {
     "build": "./node_modules/.bin/gulp",
-    "start": "node ./dist/server.js",
-    "lint": "./node_modules/.bin/eslint *.ts",
-    "fix": "./node_modules/.bin/eslint *.ts --fix"
+    "dev": "./node_modules/.bin/gulp devBuild && npm start",
+    "start": "node ./dist/server.js"
   },
   "repository": {
     "type": "git",

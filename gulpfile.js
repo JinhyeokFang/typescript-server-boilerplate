@@ -7,9 +7,6 @@ var tsProject = ts.createProject("tsconfig.json");
 
 gulp.task("build", function () {
     return tsProject.src()
-        .pipe(eslint())
-        .pipe(eslint.format())
-        .pipe(eslint.failAfterError())
         .pipe(tsProject())
         .js
         .pipe(babel({
@@ -18,5 +15,15 @@ gulp.task("build", function () {
         .pipe(uglify())
         .pipe(gulp.dest("dist"));
 });
+
+gulp.task("devBuild", function () {
+    return tsProject.src()
+        .pipe(eslint())
+        .pipe(eslint.format())
+        .pipe(eslint.failAfterError())
+        .pipe(tsProject())
+        .js
+        .pipe(gulp.dest("dist"));
+})
 
 gulp.task("default", gulp.series("build"));
