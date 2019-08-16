@@ -3,5 +3,8 @@ export default {
     env: "dev",
     db: {
         name: "dbdb"
+    },
+    fileDir: {
+        default: 'files/'
     }
 }
