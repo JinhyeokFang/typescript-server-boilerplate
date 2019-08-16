@@ -6,5 +6,6 @@ export default {
     },
     fileDir: {
         default: 'files/'
-    }
+    },
+    staticDir: './static'
 }
