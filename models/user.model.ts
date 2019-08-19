@@ -1,11 +1,7 @@
-import { Schema, model, Model, Document } from 'mongoose';
+import { Schema, model, Model } from 'mongoose';
 
 import { encrypt } from '../utils/crypto';
-
-interface UserModelType extends Document {
-    username: string;
-    password: string;
-};
+import UserModel from '../types/user.type';
 
 const userSchema = new Schema({
     username: String,
@@ -13,9 +9,9 @@ const userSchema = new Schema({
 });
 
 class User {
-    private userModel: Model<UserModelType> = model("user", userSchema);
+    private userModel: Model<UserModel> = model("user", userSchema);
     public login(username: string, password: string, callback: Function): void {
-        this.userModel.findOne({username: encrypt(username), password: encrypt(password)}, (err: object, res: UserModelType): void => {
+        this.userModel.findOne({username: encrypt(username), password: encrypt(password)}, (err: object, res: UserModel): void => {
             if (err) {
                 callback({ message: "failed", err });
             } else if (res == null) {
@@ -27,7 +23,7 @@ class User {
     }
 
     public register(username: string, password: string, callback: Function): void {
-        this.userModel.findOne({username: encrypt(username)}, (err: object, res: UserModelType): void => {
+        this.userModel.findOne({username: encrypt(username)}, (err: object, res: UserModel): void => {
             if (err) {
                 callback({ message: "failed", err });
             } else if (res == null) {
