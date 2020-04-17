@@ -1,8 +1,8 @@
 import { Document } from 'mongoose';
 
-interface UserModel extends Document {
+interface UserModelT extends Document {
     username: string;
     password: string;
 };
 
-export default UserModel;
+export default UserModelT;

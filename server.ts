@@ -8,8 +8,8 @@ import config from './config';
 
 import db from './db'
 
-import IndexRoute from './inputs/index.route';
-import AuthRoute from './inputs/auth.route';
+import IndexRoute from './controllers/index.controller';
+import AuthRoute from './controllers/auth.controller';
 
 const app: express.Application = express();
 
