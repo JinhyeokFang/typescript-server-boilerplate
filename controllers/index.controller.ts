@@ -1,9 +1,11 @@
 import { Router, Request, Response } from 'express';
+import { Controller } from './controller';
 
-class IndexController {
-    private router: Router = Router();
+export class IndexController extends Controller {
+    protected router: Router = Router();
 
     public constructor() {
+        super();
         this.router.get('/', this.index);
     }
 

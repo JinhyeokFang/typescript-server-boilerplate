@@ -1,44 +1,48 @@
-import { encrypt } from '../utils/crypto';
 import UserModelT from '../types/user.type';
 import UserModel from '../models/user.model';
+import { crypto } from '../utils/crypto';
 
-class AuthService {
-    public login(username: string, password: string, callback: Function): void {
-        UserModel.findOne({username: encrypt(username), password: encrypt(password)}, (err: object, res: UserModelT): void => {
-            if (err) {
-                callback({ message: "failed", err });
-            } else if (res == null) {
-                callback({ message: "failed", err: "the user not found" });
-            } else {
-                callback({ message: "complete" });
-            }
+export class AuthService {
+    public login(username: string, password: string): Promise<void> {
+        return new Promise((resolve: Function, reject: Function): void => {
+            UserModel.findOne({username: crypto.encrypt(username), password: crypto.encrypt(password)}, (err: object, res: UserModelT): void => {
+                if (err) {
+                    reject(err);
+                } else if (res == null) {
+                    reject("the user not found");
+                } else {
+                    resolve();
+                }
+            });
         });
     }
 
-    public register(username: string, password: string, callback: Function): void {
-        UserModel.findOne({username: encrypt(username)}, (err: object, res: UserModelT): void => {
-            if (err) {
-                callback({ message: "failed", err });
-            } else if (res == null) {
-                new UserModel({username: encrypt(username), password: encrypt(password)}).save((err: object): void => {
-                    if (err)
-                        callback({ message: "failed", err });
-                    else
-                        callback({ message: "complete" });
-                })
-            } else {
-                callback({ message: "failed", err: "the user already exist."});
-            }
+    public register(username: string, password: string): Promise<void> {
+        return new Promise((resolve: Function, reject: Function): void => {
+            UserModel.findOne({username: crypto.encrypt(username)}, (err: object, res: UserModelT): void => {
+                if (err) {
+                    reject(err);
+                } else if (res == null) {
+                    new UserModel({username: crypto.encrypt(username), password: crypto.encrypt(password)}).save((err: object): void => {
+                        if (err)
+                            reject(err);
+                        else
+                            resolve();
+                    })
+                } else {
+                    reject("the user already exist.");
+                }
+            });
         });
     }
 
-    public refreshToken(token: any, callback: Function): void {
-        if (token.time < new Date().getTime() - 345600) {
-            callback({ message: "failed", err: "time expired" })
-        } else {
-            callback({ message: "complete", token: {time: new Date().getTime(), username: token.username }})
-        }
+    public refreshToken(token): Promise<object> {
+        return new Promise((resolve: Function, reject: Function): void => {
+            if (token.time < new Date().getTime() - 345600) {
+                reject("time expired")
+            } else {
+                resolve({time: new Date().getTime(), username: token.username });
+            }
+        });
     }
 }
-
-export default new AuthService();
