@@ -1,6 +1,6 @@
 export default {
     port: 8080,
-    env: "dev",
+    env: "publishment",
     db: {
         name: "dbdb"
     },

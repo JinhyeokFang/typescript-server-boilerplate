@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express';
 
 import { AuthService } from '../services/auth.service'
 import { Controller } from './controller';
-import { jwt } from '../utils/jwt';
+import { JWT } from '../utils/jwt';
 
 export class AuthController extends Controller {
     private authService: AuthService = new AuthService();
@@ -13,6 +13,7 @@ export class AuthController extends Controller {
         this.router.get('/', this.index);
         this.router.post('/login', this.login);
         this.router.post('/register', this.register);
+        // this.router.post('/relogin', this.relogin);
     }
     public index(req: Request, res: Response): void {
         
@@ -24,7 +25,7 @@ export class AuthController extends Controller {
         try {
             await this.authService.login(username, password);
             
-            super.ResponseSuccess(res, {token: jwt.encodeToken({
+            super.ResponseSuccess(res, {token: JWT.encodeToken({
                 username: username,
                 time: new Date().getTime()
             })});
@@ -43,7 +44,7 @@ export class AuthController extends Controller {
         try {
             await this.authService.register(username, password);
 
-            super.ResponseSuccess(res, {token: jwt.encodeToken({
+            super.ResponseSuccess(res, {token: JWT.encodeToken({
                 username: username,
                 time: new Date().getTime()
             })});
@@ -60,8 +61,8 @@ export class AuthController extends Controller {
         let { token } = req.body;
 
         try {
-            let refreshedToken: object = await this.authService.refreshToken(jwt.decodeToken(token));
-            super.ResponseSuccess(res, {token: jwt.encodeToken(refreshedToken)})
+            let refreshedToken: object = await this.authService.refreshToken(JWT.decodeToken(token));
+            super.ResponseSuccess(res, {token: JWT.encodeToken(refreshedToken)})
         } catch (err) {
             super.ResponseForbidden(res, {err});
         }        

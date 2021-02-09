@@ -1,10 +1,8 @@
 import mongoose from 'mongoose';
 
-import config from './config';
-
 class DB {
-    public initialize(): void {
-        mongoose.connect(`mongodb://localhost/${config.db.name}`, {
+    public initialize(name: string): void {
+        mongoose.connect(`mongodb://localhost/${name}`, {
             useNewUrlParser: true
         })
     }

@@ -1,6 +1,6 @@
 import { createCipher, createDecipher, Cipher, Decipher } from 'crypto';
 
-export class crypto {
+export class Crypto {
     public static encrypt(data: string): string {
         const cipher: Cipher = createCipher("aes-256-cbc", "SECRET_KEY");
         let temp: string = cipher.update(data, "utf8", "base64");

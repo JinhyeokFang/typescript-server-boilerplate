@@ -13,7 +13,7 @@ export class IndexController extends Controller {
         res.render('index');
     }
 
-    public get controllerRouter() {
+    public get controllerRouter(): Router {
         return this.router
     }
 }
