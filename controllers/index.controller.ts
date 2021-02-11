@@ -7,10 +7,15 @@ export class IndexController extends Controller {
     public constructor() {
         super();
         this.router.get('/', this.index);
+        this.router.get('/login/google', this.googleLogin);
     }
 
     private index(req: Request, res: Response): void {
         res.render('index');
+    }
+
+    private googleLogin(req: Request, res: Response): void {
+        res.render('googleLogin');
     }
 
     public get controllerRouter(): Router {

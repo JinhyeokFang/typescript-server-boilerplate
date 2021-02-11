@@ -13,11 +13,11 @@ export enum TokenType {
 
 export interface CheckFunctionReturnValue {
     status: TokenStatus;
-    userData?: object;
+    userData?: Record<string, unknown>;
 }
 
 export class JWT {
-    public static encodeToken (data: object): string {
+    public static encodeToken (data: Record<string, unknown>): string {
         return encode(data, "SECRET_KEY");
     }
 
@@ -25,7 +25,7 @@ export class JWT {
         return decode(token, "SECRET_KEY");
     }
 
-    public static createAccessToken (userData: object): string {
+    public static createAccessToken (userData: Record<string, unknown>): string {
         return this.encodeToken({
             userData,
             type: TokenType.AccessToken,
@@ -33,7 +33,7 @@ export class JWT {
         });
     }
 
-    public static createRefreshToken (userData: object): string {
+    public static createRefreshToken (userData: Record<string, unknown>): string {
         return this.encodeToken({
             userData,
             type: TokenType.RefreshToken,
@@ -43,7 +43,7 @@ export class JWT {
     
     public static checkAccessToken (token: string): CheckFunctionReturnValue {
         try {
-            let data = this.decodeToken(token);
+            const data = this.decodeToken(token);
             if (data.time < new Date().getTime() - 1 * 60 * 60 * 1000) {
                 return {status: TokenStatus.Expired};
             } else {
@@ -58,7 +58,7 @@ export class JWT {
 
     public static checkRefreshToken (token: string): CheckFunctionReturnValue {
         try {
-            let data = this.decodeToken(token);
+            const data = this.decodeToken(token);
             if (data.time < new Date().getTime() - 1 * 24 * 60 * 60 * 1000) {
                 return {status: TokenStatus.Expired};
             } else {

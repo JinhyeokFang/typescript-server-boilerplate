@@ -8,9 +8,9 @@ export enum AuthServiceError {
 }
 
 export class AuthService {
-    public login(username: string, password: string): Promise<void> {
-        return new Promise((resolve: Function, reject: Function): void => {
-            UserModel.findOne({username: Crypto.encrypt(username), password: Crypto.encrypt(password)}, (err: object, res: UserModelT): void => {
+    public login(username: string, password: string): Promise<Record<string, unknown>> {
+        return new Promise((resolve: (data: Record<string, unknown>) => void, reject: (error: Record<string, unknown>) => void): void => {
+            UserModel.findOne({username: Crypto.encrypt(username), password: Crypto.encrypt(password)}, (err: Record<string, unknown>, res: UserModelT): void => {
                 if (err) {
                     reject({errorType: AuthServiceError.DBError, message: err});
                 } else if (res == null) {
@@ -22,13 +22,13 @@ export class AuthService {
         });
     }
 
-    public register(username: string, password: string): Promise<void> {
-        return new Promise((resolve: Function, reject: Function): void => {
-            UserModel.findOne({username: Crypto.encrypt(username)}, (err: object, res: UserModelT): void => {
+    public register(username: string, password: string): Promise<Record<string, unknown>> {
+        return new Promise((resolve: (data: Record<string, unknown>) => void, reject: (error: Record<string, unknown>) => void): void => {
+            UserModel.findOne({username: Crypto.encrypt(username)}, (err: Record<string, unknown>, res: UserModelT): void => {
                 if (err) {
                     reject({errorType: AuthServiceError.DBError, message: err});
                 } else if (res == null) {
-                    new UserModel({username: Crypto.encrypt(username), password: Crypto.encrypt(password)}).save((err: object): void => {
+                    new UserModel({username: Crypto.encrypt(username), password: Crypto.encrypt(password)}).save((err: Record<string, unknown>): void => {
                         if (err)
                             reject({errorType: AuthServiceError.DBError, message: err});
                         else

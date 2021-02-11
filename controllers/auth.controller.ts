@@ -1,11 +1,11 @@
 import { Router, Request, Response } from 'express';
+import { LoginTicket, OAuth2Client, TokenPayload } from 'google-auth-library';
 
 import { AuthService, AuthServiceError } from '../services/auth.service'
 import { Controller } from './controller';
 import { JWT, TokenStatus } from '../utils/jwt';
 
 export class AuthController extends Controller {
-    private authService: AuthService = new AuthService();
     protected router: Router = Router();
 
     public constructor () {
@@ -14,10 +14,11 @@ export class AuthController extends Controller {
         this.router.post('/register', this.register);
         this.router.post('/relogin', this.relogin);
         this.router.post('/tokenCheck', this.tokenData);
+        this.router.post('/google', this.google);
     }
     
     private async login(req: Request, res: Response): Promise<void> {
-        let { username, password } = req.body;
+        const { username, password } = req.body;
         
         try {
             await new AuthService().login(username, password);
@@ -33,7 +34,7 @@ export class AuthController extends Controller {
     }
     
     private async register(req: Request, res: Response): Promise<void> {
-        let { username, password } = req.body;
+        const { username, password } = req.body;
 
         try {
             await new AuthService().register(username, password);
@@ -49,9 +50,9 @@ export class AuthController extends Controller {
     }
 
     private async relogin(req: Request, res: Response): Promise<void> {
-        let { refreshToken } = req.body;  
+        const { refreshToken } = req.body;  
 
-        let result = JWT.checkRefreshToken(refreshToken);
+        const result = JWT.checkRefreshToken(refreshToken);
         if (result.status == TokenStatus.OK) {
             super.ResponseSuccess(res, {accessToken: JWT.createAccessToken(result.userData ? result.userData : {}), refreshToken: JWT.createRefreshToken(result.userData ? result.userData : {})});
         } else if (result.status == TokenStatus.Expired) {
@@ -62,15 +63,28 @@ export class AuthController extends Controller {
     }
 
     private async tokenData(req: Request, res: Response): Promise<void> {
-        let { token } = req.body;  
+        const { token } = req.body;  
 
-        let tokenObject = JWT.decodeToken(token);
-        let checkAccessToken = JWT.checkAccessToken(token);
-        let checkRefreshToken = JWT.checkRefreshToken(token);
+        const tokenObject = JWT.decodeToken(token);
+        const checkAccessToken = JWT.checkAccessToken(token);
+        const checkRefreshToken = JWT.checkRefreshToken(token);
         super.ResponseSuccess(res, { tokenObject, accessTokenOK: checkAccessToken.status == TokenStatus.OK, refreshTokenOK: checkRefreshToken.status == TokenStatus.OK });
     }
 
-    public get controllerRouter() {
+    private async google(req: Request, res: Response): Promise<void> {
+        const { token } = req.body; 
+        const client = new OAuth2Client("546712292410-8q584dg9sfv8e54fmuu3a1hq1b1vo4us");
+
+        const ticket: LoginTicket = await client.verifyIdToken({
+            idToken: token
+        });
+        const payload: TokenPayload | undefined = ticket.getPayload();
+        const userid = payload == undefined ? "error" : payload['sub'];
+
+        super.ResponseSuccess(res, { userid });
+    }
+
+    public get controllerRouter(): Router {
         return this.router
     }
 }
