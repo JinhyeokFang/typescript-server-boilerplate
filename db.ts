@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 class DB {
-    public initialize(name: string): void {
+    public initialize(name): void {
         mongoose.connect(`mongodb://localhost/${name}`, {
             useNewUrlParser: true
         })

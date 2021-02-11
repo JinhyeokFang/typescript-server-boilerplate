@@ -1,17 +1,22 @@
-import UserModelT from '../types/user.type';
-import UserModel from '../models/user.model';
+import { UserModel, UserModelT } from '../models/user.model';
 import { Crypto } from '../utils/crypto';
+
+export enum AuthServiceError {
+    UserAlreadyExist,
+    UserNotFound,
+    DBError
+}
 
 export class AuthService {
     public login(username: string, password: string): Promise<void> {
         return new Promise((resolve: Function, reject: Function): void => {
             UserModel.findOne({username: Crypto.encrypt(username), password: Crypto.encrypt(password)}, (err: object, res: UserModelT): void => {
                 if (err) {
-                    reject(err);
+                    reject({errorType: AuthServiceError.DBError, message: err});
                 } else if (res == null) {
-                    reject("the user not found");
+                    reject({errorType: AuthServiceError.UserNotFound});
                 } else {
-                    resolve();
+                    resolve({});
                 }
             });
         });
@@ -21,28 +26,18 @@ export class AuthService {
         return new Promise((resolve: Function, reject: Function): void => {
             UserModel.findOne({username: Crypto.encrypt(username)}, (err: object, res: UserModelT): void => {
                 if (err) {
-                    reject(err);
+                    reject({errorType: AuthServiceError.DBError, message: err});
                 } else if (res == null) {
                     new UserModel({username: Crypto.encrypt(username), password: Crypto.encrypt(password)}).save((err: object): void => {
                         if (err)
-                            reject(err);
+                            reject({errorType: AuthServiceError.DBError, message: err});
                         else
-                            resolve();
+                            resolve({});
                     })
                 } else {
-                    reject("the user already exist.");
+                    reject({errorType: AuthServiceError.UserAlreadyExist});
                 }
             });
-        });
-    }
-
-    public refreshToken(token): Promise<object> {
-        return new Promise((resolve: Function, reject: Function): void => {
-            if (token.time < new Date().getTime() - 345600) {
-                reject("time expired")
-            } else {
-                resolve({time: new Date().getTime(), username: token.username });
-            }
         });
     }
 }

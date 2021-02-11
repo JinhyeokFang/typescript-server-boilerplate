@@ -1,5 +1,10 @@
 import { Schema, model, Model } from 'mongoose';
-import UserModelT from '../types/user.type';
+import { Document } from 'mongoose';
+
+interface UserModelT extends Document {
+    username: string;
+    password: string;
+};
 
 const userSchema = new Schema({
     username: String,
@@ -8,4 +13,4 @@ const userSchema = new Schema({
 
 const UserModel: Model<UserModelT> = model("user", userSchema);
 
-export default UserModel;
+export { UserModel, UserModelT }

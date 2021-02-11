@@ -9,7 +9,7 @@ export class IndexController extends Controller {
         this.router.get('/', this.index);
     }
 
-    public index(req: Request, res: Response): void {
+    private index(req: Request, res: Response): void {
         res.render('index');
     }
 

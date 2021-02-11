@@ -13,8 +13,8 @@ import AuthRoute from './controllers/auth.controller';
 
 const app: express.Application = express();
 
-const dbName: string = process.env['DB_NAME'] ? process.env['DB_NAME'] : "dbdb"
-const port: string | number = process.env['PORT'] ? process.env['PORT'] : 8080;
+const dbName = process.env['DB_NAME'] ? process.env['DB_NAME'] : "dbdb";
+const port = process.env['PORT'] ? process.env['PORT'] : 8080;
 
 dotenv.config();
 db.initialize(dbName);
