@@ -19,6 +19,11 @@ const port = process.env['PORT'] ? process.env['PORT'] : 8080;
 dotenv.config();
 db.initialize(dbName);
 
+app.use((req, res, next) => {
+    res.setHeader("Content-Security-Policy", "script-src 'self' https://apis.google.com");
+    return next();
+});
+
 app.use(logger('dev'));
 app.use(logger('combined', { stream: fs.createWriteStream('./access.log', { flags: 'a' }) }));
 
